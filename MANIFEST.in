@@ -1,0 +1,2 @@
+recursive-include jupyterlab_data_binding/static *.*
+include jupyterlab-data-binding.json
