@@ -12,7 +12,7 @@ Jupyterlab data binding demo
 
     $ pip install jupyterlab_data_binding
     $ jupyter nbextension enable --py --sys-prefix jupyterlab_data_binding
-    $ jupyter labextension install jupyterlab-data-binding
+    $ jupyter labextension install @jupyter-widgets/jupyterlab-manager jupyterlab-data-binding
 
 
 使用源码安装:
@@ -22,5 +22,6 @@ Jupyterlab data binding demo
     $ pip install -e .
     $ jupyter nbextension install --py --symlink --sys-prefix jupyterlab_data_binding
     $ jupyter nbextension enable --py --sys-prefix jupyterlab_data_binding
+    $ jupyter labextension install @jupyter-widgets/jupyterlab-manager
     $ cd js
     $ jupyter labextension install .
