@@ -2,6 +2,8 @@ const widgets = require("@jupyter-widgets/base");
 const _ = require("lodash");
 const React = require("react");
 const ReactDOM = require("react-dom");
+const { Input, Icon } = require("antd");
+require("antd/dist/antd.css");
 
 // Custom Model. Custom widgets models must at least provide default values
 // for model attributes, including
@@ -46,7 +48,15 @@ const InputView = widgets.DOMWidgetView.extend({
       React.useEffect(() => {
         backbone.model.on("change:value", updateValue);
       }, []);
-      return React.createElement("input", { value, onChange: handleChange });
+      return React.createElement(Input, {
+        value,
+        onChange: handleChange,
+        prefix: React.createElement(Icon, {
+          type: "heart",
+          style: { color: "rgba(0,0,0,.25)" }
+        }),
+        addonAfter: "Built with antd and ❤️"
+      });
     }
     const $root = document.createElement("div");
     const App = React.createElement(ReactInput);
