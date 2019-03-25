@@ -4,6 +4,7 @@ const React = require("react");
 const ReactDOM = require("react-dom");
 const { Input, Icon } = require("antd");
 require("antd/dist/antd.css");
+const { useModel } = require("./hooks");
 
 // Custom Model. Custom widgets models must at least provide default values
 // for model attributes, including
@@ -37,20 +38,10 @@ const InputView = widgets.DOMWidgetView.extend({
   initialize: function() {
     const backbone = this;
     function ReactInput() {
-      const [value, setValue] = React.useState(backbone.model.get("value"));
-      const updateValue = () => setValue(backbone.model.get("value"));
-      // trigger model change
-      const handleChange = e => {
-        backbone.model.set({ value: e.target.value });
-        backbone.touch();
-      };
-      // listen to model change
-      React.useEffect(() => {
-        backbone.model.on("change:value", updateValue);
-      }, []);
+      const [value, setValue] = useModel(backbone, "value");
       return React.createElement(Input, {
         value,
-        onChange: handleChange,
+        onChange: e => setValue(e.target.value),
         prefix: React.createElement(Icon, {
           type: "heart",
           style: { color: "rgba(0,0,0,.25)" }
