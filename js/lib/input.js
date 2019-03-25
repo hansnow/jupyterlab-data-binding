@@ -1,6 +1,7 @@
-var widgets = require('@jupyter-widgets/base');
-var _ = require('lodash');
-
+const widgets = require("@jupyter-widgets/base");
+const _ = require("lodash");
+const React = require("react");
+const ReactDOM = require("react-dom");
 
 // Custom Model. Custom widgets models must at least provide default values
 // for model attributes, including
@@ -17,46 +18,44 @@ var _ = require('lodash');
 
 // When serialiazing the entire widget state for embedding, only values that
 // differ from the defaults will be specified.
-var InputModel = widgets.DOMWidgetModel.extend({
-    defaults: _.extend(widgets.DOMWidgetModel.prototype.defaults(), {
-        _model_name : 'InputModel',
-        _view_name : 'InputView',
-        _model_module : 'jupyterlab-data-binding',
-        _view_module : 'jupyterlab-data-binding',
-        _model_module_version : '0.1.0',
-        _view_module_version : '0.1.0',
-        value : 'Hello World'
-    })
+const InputModel = widgets.DOMWidgetModel.extend({
+  defaults: _.extend(widgets.DOMWidgetModel.prototype.defaults(), {
+    _model_name: "InputModel",
+    _view_name: "InputView",
+    _model_module: "jupyterlab-data-binding",
+    _view_module: "jupyterlab-data-binding",
+    _model_module_version: "0.1.0",
+    _view_module_version: "0.1.0",
+    value: "Hello World"
+  })
 });
-
 
 // Custom View. Renders the widget model.
-var InputView = widgets.DOMWidgetView.extend({
-    template: _.template('<input value="<%= value %>" />'),
-    events: {
-        input: "handleChange"
-    },
-    handleChange: function(e) {
-        this.model.set({ value: e.target.value });
-        this.touch();
-    },
-    updateView: function() {
-        var value = this.model.get("value");
-        this.$el.html(this.template({ value: value }));
-        // re-focus input tricks
-        var input = this.$('input')
-        input.focus();
-        input.val('')
-        input.val(value);
-    },
-    render: function() {
-        this.updateView();
-        this.model.on('change:value', this.updateView, this);
+const InputView = widgets.DOMWidgetView.extend({
+  initialize: function() {
+    const backbone = this;
+    function ReactInput() {
+      const [value, setValue] = React.useState(backbone.model.get("value"));
+      const updateValue = () => setValue(backbone.model.get("value"));
+      // trigger model change
+      const handleChange = e => {
+        backbone.model.set({ value: e.target.value });
+        backbone.touch();
+      };
+      // listen to model change
+      React.useEffect(() => {
+        backbone.model.on("change:value", updateValue);
+      }, []);
+      return React.createElement("input", { value, onChange: handleChange });
     }
+    const $root = document.createElement("div");
+    const App = React.createElement(ReactInput);
+    ReactDOM.render(App, $root);
+    backbone.el.append($root);
+  }
 });
 
-
 module.exports = {
-    InputModel : InputModel,
-    InputView : InputView
+  InputModel: InputModel,
+  InputView: InputView
 };
