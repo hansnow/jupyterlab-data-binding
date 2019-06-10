@@ -39,5 +39,8 @@
   },
   "jupyterlab": {
     "extension": "lib/labplugin"
+  },
+  "resolutions": {
+    "css-loader/**/js-yaml": "^3.13.1"
   }
 }
